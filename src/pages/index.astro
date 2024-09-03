@@ -12,7 +12,12 @@ import Button from '@components/Button'
 	</head>
 	<body>
 	<main class="flex flex-row items-center justify-center h-screen space-x-4">
-		<Button variant="link">Hello Astro!</Button>
+		<div class="flex flex-col space-y-4 items-center">
+			<Button variant="link" src="https://google.com">Hello Astro!</Button>
+			<Button variant="secondary" icon="tabler:brand-astro">Hello Astro!</Button>
+			<Button variant="outline" icon="tabler:brand-astro" class="text-2xl"/>
+			<Button variant="none" icon="tabler:brand-astro">Hello Astro!</Button>
+		</div>
 		<div class="flex flex-col space-y-4 items-center">
 			<Button variant="primary">Hello Astro!</Button>
 			<Button variant="secondary">Hello Astro!</Button>
