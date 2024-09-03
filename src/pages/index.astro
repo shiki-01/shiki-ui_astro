@@ -1,5 +1,6 @@
 ---
-import Button from '@components/Button'
+import Accordion from '@components/Accordion'
+const {Root: ARoot, Content: AContent, Item: AItem, Trigger: ATrigger} = Accordion
 ---
 
 <html lang="en">
@@ -12,30 +13,24 @@ import Button from '@components/Button'
 	</head>
 	<body>
 	<main class="flex flex-row items-center justify-center h-screen space-x-4">
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="link" src="https://google.com">Hello Astro!</Button>
-			<Button variant="secondary" icon="tabler:brand-astro">Hello Astro!</Button>
-			<Button variant="outline" icon="tabler:brand-astro" class="text-2xl"/>
-			<Button variant="none" icon="tabler:brand-astro">Hello Astro!</Button>
-		</div>
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="primary">Hello Astro!</Button>
-			<Button variant="secondary">Hello Astro!</Button>
-			<Button variant="outline">Hello Astro!</Button>
-			<Button variant="none">Hello Astro!</Button>
-		</div>
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="primary" radius="full">Hello Astro!</Button>
-			<Button variant="secondary" radius="none">Hello Astro!</Button>
-			<Button variant="outline" radius="full">Hello Astro!</Button>
-			<Button variant="none" radius="none">Hello Astro!</Button>
-		</div>
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="primary" disabled>Hello Astro!</Button>
-			<Button variant="secondary" disabled>Hello Astro!</Button>
-			<Button variant="outline" disabled>Hello Astro!</Button>
-			<Button variant="none" disabled>Hello Astro!</Button>
-		</div>
+		<ARoot multiple={true}>
+			<AItem>
+				<AContent>
+					<p>Content 1</p>
+				</AContent>
+				<ATrigger>
+					<button>Trigger 1</button>
+				</ATrigger>
+			</AItem>
+			<AItem>
+				<AContent>
+					<p>Content 2</p>
+				</AContent>
+				<ATrigger>
+					<button>Trigger 2</button>
+				</ATrigger>
+			</AItem>
+		</ARoot>
 	</main>
 	</body>
 </html>

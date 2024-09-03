@@ -1,0 +1,16 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    multiple: boolean
+}
+const {
+    class: className,
+    id: accordionId,
+    multiple,
+} = Astro.props;
+---
+
+<div class={`w-full ${className}`} id={accordionId}>
+    <slot/>
+</div>
