@@ -1,0 +1,32 @@
+---
+interface Props {
+    class?: string;
+    isToday: boolean;
+}
+const {
+    class: className,
+    isToday
+} = Astro.props;
+---
+
+<div class={`flex justify-center text-sky-200 ${isToday ? "today" : ""} ${className}`}>
+    <slot/>
+</div>
+
+<style>
+    .today {
+        position: relative;
+    }
+
+    .today::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 50%;
+        background-color: #93C5FD;
+        opacity: 0.3;
+    }
+</style>

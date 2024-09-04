@@ -1,5 +1,5 @@
 ---
-import Badge from '@components/Badge'
+import Calender from "../components/Calender";
 ---
 
 <html lang="en">
@@ -12,12 +12,7 @@ import Badge from '@components/Badge'
 	</head>
 	<body>
 	<main class="flex flex-col items-center justify-center h-screen space-y-4">
-		<Badge variant="primary">Hello Astro!</Badge>
-		<Badge variant="secondary">Hello Astro!</Badge>
-		<Badge variant="outline">Hello Astro!</Badge>
-		<Badge variant="link" src="https://google.com">Hello Astro!</Badge>
-		<Badge variant="primary" icon="tabler:brand-astro">Hello Astro!</Badge>
-		<Badge variant="secondary" icon="tabler:brand-astro" />
+		<Calender mode="month" selected="2024-09-04"/>
 	</main>
 	</body>
 </html>
