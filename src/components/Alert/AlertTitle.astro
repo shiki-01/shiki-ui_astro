@@ -11,7 +11,7 @@ const {
 } = Astro.props
 ---
 
-<div class={`flex align-middle text-lg ${className}`} id={`${alertId}`}>
+<div class={`flex align-middle font-bold ${className}`} id={`${alertId}`}>
     {icon && <iconify-icon class="icon" icon={icon} />}
     <slot />
 </div>
@@ -29,5 +29,7 @@ const {
         display: flex;
         align-items: center;
         left: -1.4rem;
+        top: 50%;
+        transform: translateY(-50%);
     }
 </style>

@@ -2,7 +2,7 @@
 interface Props {
     class?: string;
     id?: string;
-    variant?: 'default' | 'alert' | 'succes' | 'note';
+    variant?: 'default' | 'alert' | 'success' | 'note';
     radius?: 'rounded' | 'full' | 'none'
 }
 const {
@@ -14,12 +14,12 @@ const {
 const styles = {
     'default': 'border-gray-200 text-gray-600 shadow-gray-400/20',
     'alert': 'border-red-200 text-red-500 shadow-red-500/20',
-    'succes': '',
-    'note': '',
+    'success': 'border-green-300 text-green-500 shadow-green-500/20',
+    'note': 'border-sky-200 text-sky-500 shadow-sky-500/20',
 }
 const radii = {
     'rounded': 'rounded-lg',
-    'full': '',
+    'full': 'rounded-full',
     'none': '',
 }
 ---

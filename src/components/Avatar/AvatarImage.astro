@@ -1,0 +1,30 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    src: string;
+    alt?: string;
+}
+const {
+    class: className,
+    id: alertId,
+    src,
+    alt = 'Avatar'
+} = Astro.props;
+---
+
+<img class={`shiki-image hidden ${className}`} src={src} alt={alt} id={`${alertId}`} />
+
+<script>
+    const imgs = document.querySelectorAll('.shiki-image');
+    imgs.forEach(img => {
+        const image = img.getAttribute('src');
+        if (image) {
+            const newImage = new Image();
+            newImage.src = image;
+            newImage.onload = () => {
+                img.classList.remove('hidden');
+            };
+        }
+    });
+</script>

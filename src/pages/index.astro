@@ -1,6 +1,5 @@
 ---
-import Alert from '@components/Alert'
-const { Root: ARoot, Title: ATitle, Description: ADesc } = Alert
+import Badge from '@components/Badge'
 ---
 
 <html lang="en">
@@ -13,22 +12,12 @@ const { Root: ARoot, Title: ATitle, Description: ADesc } = Alert
 	</head>
 	<body>
 	<main class="flex flex-col items-center justify-center h-screen space-y-4">
-		<ARoot variant="default">
-			<ATitle icon="tabler:brand-astro" >
-				Hello Astro!
-			</ATitle>
-			<ADesc>
-				This is a Deacription!
-			</ADesc>
-		</ARoot>
-		<ARoot variant='alert'>
-			<ATitle icon="tabler:brand-astro">
-				Hello Astro!
-			</ATitle>
-			<ADesc>
-				This is a Deacription!
-			</ADesc>
-		</ARoot>
+		<Badge variant="primary">Hello Astro!</Badge>
+		<Badge variant="secondary">Hello Astro!</Badge>
+		<Badge variant="outline">Hello Astro!</Badge>
+		<Badge variant="link" src="https://google.com">Hello Astro!</Badge>
+		<Badge variant="primary" icon="tabler:brand-astro">Hello Astro!</Badge>
+		<Badge variant="secondary" icon="tabler:brand-astro" />
 	</main>
 	</body>
 </html>

@@ -1,0 +1,47 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    variant?: 'primary' | 'secondary' | "outline" | "link" | "none";
+    radius?: 'rounded' | 'full' | 'none';
+    src?: string;
+    icon?: string;
+    disabled?: boolean;
+}
+const {
+    class: className,
+    id: buttonId,
+    variant = 'none',
+    radius = "rounded",
+    src,
+    icon,
+} = Astro.props;
+const classes = {
+    primary: 'bg-sky-500 text-white shadow-sky-500/50',
+    secondary: 'bg-gray-500 text-white shadow-gray-500/50',
+    outline: 'border border-sky-500 text-sky-500 shadow-sky-500/20',
+    link: 'text-sky-500 shadow-none',
+    none: 'text-sky-500 shadow-none',
+};
+const radii = {
+    rounded: 'rounded-md',
+    full: 'rounded-full',
+    none: '',
+};
+---
+
+<div class={`px-2 py-1 text-sm ${Astro.slots.default ? "" : "px-1"} shadow-md transition-all cursor-pointer duration-300 ${classes[variant]} ${radii[radius]} ${className}`}
+        id={buttonId}
+>
+    {src ? <a href={src}><slot/></a>
+        :
+            <div class="flex items-center justify-center gap-2 w-full h-full">
+                {icon && <iconify-icon icon={icon}/>}
+                <slot/>
+            </div>
+    }
+</div>
+
+<script>
+    import 'iconify-icon'
+</script>
