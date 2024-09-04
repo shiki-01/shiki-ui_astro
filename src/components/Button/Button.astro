@@ -1,23 +1,27 @@
 ---
 interface Props {
     class?: string;
+    id?: string;
     variant?: 'primary' | 'secondary' | "outline" | "link" | "none";
-    radius?: 'rounded' | 'full' | 'none'
+    radius?: 'rounded' | 'full' | 'none';
+    src?: string;
+    icon?: string;
     disabled?: boolean;
-    onclick?: () => void;
 }
 const {
     class: className,
+    id: buttonId,
     variant = 'none',
     radius = "rounded",
+    src,
+    icon,
     disabled = false,
-    onclick,
 } = Astro.props;
 const classes = {
     primary: 'bg-sky-500 text-white shadow-sky-500/50 hover:bg-sky-400 hover:shadow-sky-500/40',
     secondary: 'bg-gray-500 text-white shadow-gray-500/50 hover:bg-gray-400 hover:shadow-gray-500/40',
     outline: 'border border-sky-500 text-sky-500 shadow-sky-500/20 hover:bg-sky-500 hover:text-white hover:shadow-md hover:shadow-sky-500/40',
-    link: 'text-sky-500 hover:text-sky-400 shadow-none hover:shadow-none link px-2',
+    link: 'text-sky-500 hover:text-sky-400 shadow-none hover:shadow-none link',
     none: 'text-sky-500 hover:text-sky-400 shadow-none hover:shadow-none',
 };
 const radii = {
@@ -27,42 +31,49 @@ const radii = {
 };
 ---
 
-<button class={`px-4 py-2 shadow-md transition-all duration-300 ${disabled ? "cursor-not-allowed" : "cursor-pointer hover:shadow-lg"} ${classes[variant]} ${radii[radius]} ${className}`}
-        id="handleClick"
-        disabled>
-    <slot/>
+<button class={`px-4 py-2 ${Astro.slots.default ? "" : "px-2"} shadow-md transition-all ${disabled ? "cursor-not-allowed" : "cursor-pointer hover:shadow-lg"} duration-300 ${classes[variant]} ${radii[radius]} ${className}`}
+        id={buttonId}
+        disabled={disabled}
+>
+    {src ?
+            <a href={src}>
+                <slot/>
+            </a>
+        :
+            <div class="flex items-center justify-center gap-2 w-full h-full">
+                {icon &&
+                        <iconify-icon icon={icon}/>}
+                <slot/>
+            </div>
+    }
 </button>
 
 <script>
-    const element = document.getElementById('handleClick');
-    if (element) {
-        element.addEventListener('click', () => {
-            if (Astro.props.onclick) {
-                Astro.props.onclick();
-            }
-        });
-    }
+    import 'iconify-icon'
 </script>
 
 <style>
     .link {
         position: relative;
+        border-bottom: none;
+        transition: all 0.3s;
     }
 
     .link::after {
-        @apply bg-sky-400 h-[1.2px];
         content: '';
         position: absolute;
-        display: flex;
         width: 100%;
+        height: 1px;
         bottom: 0;
         left: 0;
+        background-color: currentColor;
         transform: scaleX(0);
-        transform-origin: left top;
+        transform-origin: right;
         transition: transform 0.3s ease-out;
     }
 
     .link:hover::after {
         transform: scaleX(1);
+        transform-origin: left;
     }
 </style>

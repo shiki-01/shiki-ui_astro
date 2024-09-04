@@ -1,0 +1,24 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    value: string;
+}
+const {
+    class: className,
+    id: accordionId,
+    value,
+} = Astro.props
+---
+
+<div class={`shiki-accordion-item ${className}`} id={`${accordionId}`} data-accordion>
+    <slot />
+</div>
+
+<script>
+    const items = document.querySelectorAll('.shiki-accordion-item')
+    items.forEach((el) => {
+        const data = el.getAttribute('data-accordion')
+        
+    })
+</script>

@@ -1,0 +1,40 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    multiple: boolean;
+    name: string;
+}
+const {
+    class: className,
+    id: accordionId,
+    multiple,
+    name,
+} = Astro.props;
+const accordionName = 'accordion-' + name + ':' + multiple ? '1' : '0'
+let opened: string[] = []
+function toggleOpen(index: string, multiple: boolean) {
+    if (opened.includes(index)) {
+        opened.filter((i) => i != index)
+    } else {
+        if (multiple) {
+            opened.push(index)
+        } else {
+            opened = [index]
+        }
+    }
+}
+---
+
+<div class={`shiki-accordion-root w-full ${className}`} id={accordionId} data-accordion={accordionName}>
+    <slot />
+</div>
+
+<script>
+    const accordions = document.querySelectorAll('.shiki-accordion-root')
+    accordions?.forEach((el) => {
+        const name = el.getAttribute("data-accordion")
+        const item = el.querySelector('shiki-accordion-item')
+        item?.setAttribute('data-accordion', name ? name : "")
+    })
+</script>

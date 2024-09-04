@@ -1,0 +1,14 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+}
+const {
+    class: className,
+    id: alertId,
+} = Astro.props
+---
+
+<div class={`${className}`} id={`${alertId}`}>
+    <slot />
+</div>

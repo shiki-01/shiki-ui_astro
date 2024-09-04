@@ -1,5 +1,6 @@
 ---
-import Button from '@components/Button'
+import Alert from '@components/Alert'
+const { Root: ARoot, Title: ATitle, Description: ADesc } = Alert
 ---
 
 <html lang="en">
@@ -11,26 +12,23 @@ import Button from '@components/Button'
 		<title>Astro</title>
 	</head>
 	<body>
-	<main class="flex flex-row items-center justify-center h-screen space-x-4">
-		<Button variant="link">Hello Astro!</Button>
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="primary">Hello Astro!</Button>
-			<Button variant="secondary">Hello Astro!</Button>
-			<Button variant="outline">Hello Astro!</Button>
-			<Button variant="none">Hello Astro!</Button>
-		</div>
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="primary" radius="full">Hello Astro!</Button>
-			<Button variant="secondary" radius="none">Hello Astro!</Button>
-			<Button variant="outline" radius="full">Hello Astro!</Button>
-			<Button variant="none" radius="none">Hello Astro!</Button>
-		</div>
-		<div class="flex flex-col space-y-4 items-center">
-			<Button variant="primary" disabled>Hello Astro!</Button>
-			<Button variant="secondary" disabled>Hello Astro!</Button>
-			<Button variant="outline" disabled>Hello Astro!</Button>
-			<Button variant="none" disabled>Hello Astro!</Button>
-		</div>
+	<main class="flex flex-col items-center justify-center h-screen space-y-4">
+		<ARoot variant="default">
+			<ATitle icon="tabler:brand-astro" >
+				Hello Astro!
+			</ATitle>
+			<ADesc>
+				This is a Deacription!
+			</ADesc>
+		</ARoot>
+		<ARoot variant='alert'>
+			<ATitle icon="tabler:brand-astro">
+				Hello Astro!
+			</ATitle>
+			<ADesc>
+				This is a Deacription!
+			</ADesc>
+		</ARoot>
 	</main>
 	</body>
 </html>

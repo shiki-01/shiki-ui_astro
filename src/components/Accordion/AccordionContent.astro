@@ -1,0 +1,22 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    isOpen?: boolean;
+    transition?: 'slide'
+    transitionConfig?: transitionConfigType;
+}
+type transitionConfigType = {
+    duration: number
+}
+const {
+    class: className,
+    id: accordionId,
+    transition = 'slide',
+    transitionConfig = {duration:200},
+} = Astro.props
+---
+
+<div class={`${className}`} id={`${accordionId}`}>
+    <slot />
+</div>
