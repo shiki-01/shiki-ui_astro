@@ -30,7 +30,7 @@ const radii = {
 };
 ---
 
-<div class={`px-2 py-1 text-sm ${Astro.slots.default ? "" : "px-1"} shadow-md transition-all cursor-pointer duration-300 ${classes[variant]} ${radii[radius]} ${className}`}
+<div class={`py-1 text-sm ${Astro.slots.default ? "px-2" : "px-1"} shadow-md transition-all cursor-pointer duration-300 ${classes[variant]} ${radii[radius]} ${className}`}
         id={buttonId}
 >
     {src ? <a href={src}><slot/></a>

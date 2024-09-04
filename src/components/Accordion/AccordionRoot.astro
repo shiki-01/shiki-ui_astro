@@ -34,7 +34,7 @@ function toggleOpen(index: string, multiple: boolean) {
     const accordions = document.querySelectorAll('.shiki-accordion-root')
     accordions?.forEach((el) => {
         const name = el.getAttribute("data-accordion")
-        const item = el.querySelector('shiki-accordion-item')
+        const item = el.querySelector('.shiki-accordion-item')
         item?.setAttribute('data-accordion', name ? name : "")
     })
 </script>
