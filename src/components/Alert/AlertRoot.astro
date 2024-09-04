@@ -1,0 +1,29 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    variant?: 'default' | 'alert' | 'succes' | 'note';
+    radius?: 'rounded' | 'full' | 'none'
+}
+const {
+    class: className,
+    id: alertId,
+    variant = 'default',
+    radius = 'rounded'
+} = Astro.props
+const styles = {
+    'default': 'border-gray-200 text-gray-600 shadow-gray-400/20',
+    'alert': 'border-red-200 text-red-500 shadow-red-500/20',
+    'succes': '',
+    'note': '',
+}
+const radii = {
+    'rounded': 'rounded-lg',
+    'full': '',
+    'none': '',
+}
+---
+
+<div class={`flex flex-col shadow-lg text-start py-4 px-8 border ${styles[variant]} ${radii[radius]} ${className}`} id={`${alertId}`}>
+    <slot />
+</div>

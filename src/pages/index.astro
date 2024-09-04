@@ -1,6 +1,6 @@
 ---
-import Accordion from '@components/Accordion'
-const {Root: ARoot, Content: AContent, Item: AItem, Trigger: ATrigger} = Accordion
+import Alert from '@components/Alert'
+const { Root: ARoot, Title: ATitle, Description: ADesc } = Alert
 ---
 
 <html lang="en">
@@ -12,24 +12,22 @@ const {Root: ARoot, Content: AContent, Item: AItem, Trigger: ATrigger} = Accordi
 		<title>Astro</title>
 	</head>
 	<body>
-	<main class="flex flex-row items-center justify-center h-screen space-x-4">
-		<ARoot multiple={true}>
-			<AItem>
-				<AContent>
-					<p>Content 1</p>
-				</AContent>
-				<ATrigger>
-					<button>Trigger 1</button>
-				</ATrigger>
-			</AItem>
-			<AItem>
-				<AContent>
-					<p>Content 2</p>
-				</AContent>
-				<ATrigger>
-					<button>Trigger 2</button>
-				</ATrigger>
-			</AItem>
+	<main class="flex flex-col items-center justify-center h-screen space-y-4">
+		<ARoot variant="default">
+			<ATitle icon="tabler:brand-astro" >
+				Hello Astro!
+			</ATitle>
+			<ADesc>
+				This is a Deacription!
+			</ADesc>
+		</ARoot>
+		<ARoot variant='alert'>
+			<ATitle icon="tabler:brand-astro">
+				Hello Astro!
+			</ATitle>
+			<ADesc>
+				This is a Deacription!
+			</ADesc>
 		</ARoot>
 	</main>
 	</body>

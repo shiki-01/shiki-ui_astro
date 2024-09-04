@@ -1,0 +1,33 @@
+---
+interface Props {
+    class?: string;
+    id?: string;
+    icon?: string;
+}
+const {
+    class: className,
+    id: alertId,
+    icon,
+} = Astro.props
+---
+
+<div class={`flex align-middle text-lg ${className}`} id={`${alertId}`}>
+    {icon && <iconify-icon class="icon" icon={icon} />}
+    <slot />
+</div>
+
+<script>
+    import 'iconify-icon'
+</script>
+
+<style>
+    div {
+        position: relative;
+    }
+    .icon {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        left: -1.4rem;
+    }
+</style>

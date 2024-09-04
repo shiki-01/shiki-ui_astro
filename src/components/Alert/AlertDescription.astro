@@ -5,10 +5,10 @@ interface Props {
 }
 const {
     class: className,
-    id: accordionId,
+    id: alertId,
 } = Astro.props
 ---
 
-<div class={``} id={``}>
+<div class={`${className}`} id={`${alertId}`}>
     <slot />
 </div>
