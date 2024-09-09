@@ -2,13 +2,27 @@
 interface Props {
     class?: string;
     id?: string;
+    isOpen?: boolean;
 }
 const {
     class: className,
     id: accordionId,
+    isOpen = false,
 } = Astro.props
 ---
 
-<div class={``} id={``}>
+<div class={`shiki-accordion-trigger ${className}`} id={`${accordionId}`} data-is-open={isOpen ? 'open' : 'close'}>
     <slot />
 </div>
+
+<style lang="postcss">
+    .shiki-accordion-trigger::after {
+        content: attr(data-is-open)
+    }
+    .shiki-accordion-trigger[data-is-open='open'] {
+        @apply text-red-500;
+    }
+    .shiki-accordion-trigger[data-is-open='close'] {
+        @apply text-red-500;
+    }
+</style>

@@ -2,13 +2,13 @@
 interface Props {
     class?: string;
     id?: string;
-    multiple: boolean;
+    multiple?: boolean;
     name: string;
 }
 const {
     class: className,
     id: accordionId,
-    multiple,
+    multiple = false,
     name,
 } = Astro.props;
 const accordionName = 'accordion-' + name + ':' + multiple ? '1' : '0'
@@ -32,9 +32,21 @@ function toggleOpen(index: string, multiple: boolean) {
 
 <script>
     const accordions = document.querySelectorAll('.shiki-accordion-root')
-    accordions?.forEach((el) => {
-        const name = el.getAttribute("data-accordion")
-        const item = el.querySelector('.shiki-accordion-item')
-        item?.setAttribute('data-accordion', name ? name : "")
+    if (!accordions) return
+    accordions.forEach((el) => {
+        const items = el.querySelectorAll('.shiki-accordion-item')
+        if (!items) return
+        items.forEach((item, i) => {
+        const trigger = item.querySelector('.shiki-accordion-trigger')
+        const content = item.querySelector('.shiki-accordion-content')
+        if (!trigger || !content) return
+        content.setAttribute('data-is-open', trigger.getAttribute('data-is-open') || 'close')
+        trigger.addEventListener('click', () => {
+            const isOpen = trigger.getAttribute('data-is-open') || 'close'
+            const set = isOpen == 'open' ? 'close' : 'open'
+            trigger.setAttribute('data-is-open',set)
+            content.setAttribute('data-is-open',set)
+        })
+    })
     })
 </script>

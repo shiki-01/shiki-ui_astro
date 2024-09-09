@@ -17,6 +17,9 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
+!src/pages/.gitkeep
+src/pages/*
+
 # environment variables
 .env
 .env.production
