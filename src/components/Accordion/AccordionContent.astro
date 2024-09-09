@@ -27,12 +27,14 @@ const {
 
 <style lang="postcss">
     .shiki-accordion-content {
-        transition: grid-template-rows 0.5s;
+        transition: grid-template-rows 0.3s ease, padding 0.3s ease;
     }
     .shiki-accordion-content[data-is-open='open'] {
+        @apply px-2 py-4;
         grid-template-rows: 1fr;
     }
     .shiki-accordion-content[data-is-open='close'] {
+        @apply px-2 py-0;
         grid-template-rows: 0fr;
     }
 </style>
