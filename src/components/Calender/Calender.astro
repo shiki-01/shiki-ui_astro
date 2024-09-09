@@ -1,12 +1,12 @@
 ---
 import {Icon} from 'astro-icon/components'
-import Day from './Day.astro'
 interface Props {
     class?: string;
     id?: string;
     mode?: 'day' | 'week' | 'month' | 'year';
     selected?: string;
     firstDayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    gap?: 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | '8xl' | '9xl' | '10xl';
 }
 const {
     class: className = '',
@@ -14,14 +14,73 @@ const {
     mode = 'month',
     selected = '',
     firstDayOfWeek = 0,
+    gap = 'md',
 } = Astro.props;
-const calender = {
-    day: 'grid-cols-1',
-    week: 'grid-cols-7',
-    month: 'grid-rows-6',
-    year: 'grid-cols-4',
+const gapStyle = {
+    md: 'gap-2',
+    lg: 'gap-4',
+    xl: 'gap-6',
+    '2xl': 'gap-8',
+    '3xl': 'gap-10',
+    '4xl': 'gap-12',
+    '5xl': 'gap-14',
+    '6xl': 'gap-16',
+    '7xl': 'gap-18',
+    '8xl': 'gap-20',
+    '9xl': 'gap-22',
+    '10xl': 'gap-24',
+}
+const calenderMode = {
+    day: {col: 'grid-cols-1', row: 'grid-rows-1'},
+    week: {col: 'grid-cols-1', row: 'grid-rows-1'},
+    month: {col: 'grid-cols-7', row: 'grid-rows-6'},
+    year: {col: 'grid-cols-4', row: 'grid-rows-3'},
 };
 const selectedDate = new Date(selected);
+const returnWeek = (date: Date) => {
+    const week: Date[] = [];
+    const sunday = date.getDate() - date.getDay();
+    for (let i = 0; i < 7; i++) {
+        week.push({date: new Date(date.setDate(sunday + i)), day: date.getDay()});
+    }
+    return week;
+}
+const returnMonth = (date: Date) => {
+    const month: Date[][] = [];
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const firstDayWeek = firstDay.getDay();
+    const lastDayWeek = lastDay.getDay();
+    const lastDate = lastDay.getDate();
+    let week: Date[] = [];
+
+    for (let i = 0; i < firstDayWeek; i++) {
+        week.push(new Date(firstDay.setDate(firstDay.getDate() - 1)));
+    }
+    for (let i = 1; i <= lastDate; i++) {
+        if (week.length === 7) {
+            month.push(week);
+            week = [];
+        }
+        week.push(new Date(date.getFullYear(), date.getMonth(), i));
+    }
+    for (let i = 0; i < 6 - lastDayWeek; i++) {
+        if (week.length === 7) {
+            month.push(week);
+            week = [];
+        }
+        week.push(new Date(lastDay.setDate(lastDay.getDate() + 1)));
+    }
+    if (week.length > 0) {
+        month.push(week);
+    }
+    return month;
+}
+const calender = {
+    day: [{date: selectedDate, day: selectedDate.getDay()}],
+    week: [returnWeek(selectedDate)],
+    month: [returnMonth(selectedDate)],
+}
 ---
 
 <div data-mode={mode}
@@ -29,86 +88,66 @@ const selectedDate = new Date(selected);
      data-first-day-of-week={firstDayOfWeek}
      class={`flex flex-col justify-center items-center py-4 px-6 rounded-lg border border-sky-200 shadow-lg shadow-sky-500/20 ${className}`}
      id={`${alertId}`}>
-    <div class="flex items-center justify-between">
-        <Icon name="ic:round-chevron-left" class="w-12 h-12 cursor-pointer"/>
+    <div class="flex items-center justify-between pb-4">
+        <Icon name="ic:round-chevron-left" class="w-10 h-10 cursor-pointer"/>
         <div class="title"/>
-        <Icon name="ic:round-chevron-right" class="w-12 h-12 cursor-pointer"/>
+        <Icon name="ic:round-chevron-right" class="w-10 h-10 cursor-pointer"/>
     </div>
-    <div class={`calender ${calender[mode]}`}/>
+    <div class={`grid ${gapStyle[gap]} ${calenderMode[mode].row}`}>
+        {calender[mode].map((row: Date[] | Date[][]) => {
+            return row.map((col: Date | Date[]) => {
+                return (
+                        <div class={`grid ${gapStyle[gap]} ${calenderMode[mode].col} text-sky-400`}>
+                            {Array.isArray(col) ?
+                                col.map((date: Date) => {
+                                    return (
+                                            <div class={`${date.getDate() === selectedDate.getDate() ? "today" : ""} ${date.getMonth() != selectedDate.getMonth() ? "noday" : "day"}`}>
+                                                {date.getDate()}
+                                            </div>
+                                    )
+                                }) :
+                                    <div class={`${col.getDate() === selectedDate.getDate() ? "today" : ""} ${col.getMonth() != selectedDate.getMonth() ? "noday" : "day"}`}>
+                                        {col.getDate()}
+                                    </div>
+                            }
+                        </div>
+                )
+            })
+        })}
+    </div>
 </div>
 
 <script>
-    const calender = document.querySelectorAll('[data-mode]');
-    calender.forEach(cal => {
-        const mode = cal.getAttribute('data-mode');
-        const selected = cal.getAttribute('data-selected') || new Date();
-        const firstDayOfWeek = cal.getAttribute('data-first-day-of-week') || 0;
-        const titleElement = cal.querySelector('.title');
-        const calenderElement = cal.querySelector('.calender');
-        if (titleElement && calenderElement) {
-            const title = new Date(selected);
-            if (mode === 'day') {
-                titleElement.innerHTML = `${title.getFullYear()}年 ${title.getMonth() + 1}月 ${title.getDate()}日`;
-                calenderElement.innerHTML = `<Day class="day">${title.getDate()}</Day>`;
-            } else if (mode === 'week') {
-                titleElement.innerHTML = `${title.getFullYear()}年 ${title.getMonth() + 1}月 ${title.getDate()}日`;
-                const firstDate = new Date(title.getFullYear(), title.getMonth(), title.getDate() - title.getDay());
-                const calender = [];
-                for (let i = 0; i < 7; i++) {
-                    const day = new Date(firstDate.getFullYear(), firstDate.getMonth(), firstDate.getDate() + i);
-                    calender.push(`<Day class="text-sky-500">${day.getDate()}</Day>`);
-                }
-                calenderElement.innerHTML = calender.join('');
-            } else if (mode === 'month') {
-                titleElement.innerHTML = `${title.getFullYear()}年 ${title.getMonth() + 1}月`;
-                const firstDate = new Date(title.getFullYear(), title.getMonth(), 1);
-                const lastMonth = new Date(title.getFullYear(), title.getMonth(), 0);
-                const previousMonthDays = (firstDate.getDay() - Number(firstDayOfWeek) + 7) % 7;
-                const totalDaysInMonth = new Date(title.getFullYear(), title.getMonth() + 1, 0).getDate();
-
-                const calender = [];
-                for (let i = 0; i < 6; i++) {
-                    calender.push('<div class="grid grid-cols-7 py-1 gap-2">');
-                    for (let j = 0; j < 7; j++) {
-                        const dayIndex = i * 7 + j;
-                        if (dayIndex < previousMonthDays) {
-                            const day = lastMonth.getDate() - previousMonthDays + dayIndex + 1;
-                            calender.push(`<Day class="text-sky-200 noToMonth">${day}</Day>`);
-                        } else if (dayIndex < previousMonthDays + totalDaysInMonth) {
-                            const day = dayIndex - previousMonthDays + 1;
-                            if (day === title.getDate() && title.getMonth() === title.getMonth() && title.getFullYear() === title.getFullYear()) {
-                                calender.push(`<Day class="text-sky-500" isToday>${day}</Day>`);
-                            } else {
-                                calender.push(`<Day class="text-sky-500">${day}</Day>`);
-                            }
-                        } else {
-                            const day = dayIndex - (previousMonthDays + totalDaysInMonth) + 1;
-                            calender.push(`<Day class="text-sky-200 noToMonth">${day}</Day>`);
-                        }
-                    }
-                    calender.push('</div>');
-                }
-
-                if (firstDate.getDay() === 0) {
-                    const extraWeek = [];
-                    for (let j = 0; j < 7; j++) {
-                        const day = lastMonth.getDate() - 6 + j;
-                        extraWeek.push(`<Day class="text-sky-200 noToMonth">${day}</Day>`);
-                        calender.pop();
-                    }
-                    calender.pop();
-                    calender.unshift('<div class="grid grid-cols-7 py-1 gap-2">' + extraWeek.join('') + '</div>');
-                }
-
-                calenderElement.innerHTML = calender.join('');
-            } else if (mode === 'year') {
-                titleElement.innerHTML = `${title.getFullYear()}年`;
-                const calender = [];
-                for (let i = 0; i < 12; i++) {
-                    calender.push(`<div class="month">${i + 1}</div>`);
-                }
-                calenderElement.innerHTML = calender.join('');
-            }
-        }
-    });
 </script>
+
+<style lang="postcss">
+    .noday {
+        @apply text-sky-200 flex justify-center items-center;
+    }
+
+    .day {
+        @apply relative flex justify-center items-center text-sky-400 cursor-pointer;
+
+        &::before {
+            @apply content-none w-8 h-8 rounded-full transition-colors duration-75 hover:bg-sky-500/10;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    .today {
+        @apply relative;
+
+        &::before {
+            @apply bg-sky-500/30 w-8 h-8 rounded-full;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+</style>

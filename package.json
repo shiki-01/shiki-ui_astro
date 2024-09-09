@@ -1,7 +1,7 @@
 {
   "name": "shiki-ui_astro",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -12,6 +12,14 @@
   "files": [
     "src/components"
   ],
+  "exports": {
+    "./Accordion": "./src/components/Accordion/index.ts",
+    "./Alert": "./src/components/Alert/index.ts",
+    "./Avatar": "./src/components/Avatar/index.ts",
+    "./Badge": "./src/components/Badge/index.ts",
+    "./Button": "./src/components/Button/index.ts",
+    "./Calender": "./src/components/Calender/index.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shiki-01/shiki-ui_astro.git"
