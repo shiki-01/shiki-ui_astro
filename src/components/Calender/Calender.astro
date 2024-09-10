@@ -1,5 +1,6 @@
 ---
 import {Icon} from 'astro-icon/components'
+import { returnWeek, returnMonth, returnYear } from './calender';
 
 interface Props {
     class?: string;
@@ -47,76 +48,7 @@ const calenderMode = {
     month: {col: 'grid-cols-7', row: 'grid-rows-6'},
     year: {col: 'grid-cols-4', row: 'grid-rows-3'},
 };
-const selectedDate = new Date(selected);
-
-const returnWeek = (date: Date) => {
-    const week: Day[] = [];
-    const sunday = date.getDate() - date.getDay();
-    for (let i = 0; i < 7; i++) {
-        week.push({date: new Date(date.setDate(sunday + i)), day: date.getDay()});
-    }
-    return week;
-}
-const returnMonth = (date: Date) => {
-    const month: Day[][] = [];
-    const firstDate = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    const firstWeek = firstDate.getDay();
-    const lastWeek = lastDate.getDay();
-    const lastDay = lastDate.getDate();
-    let week: Day[] = [];
-    for (let i = 0; i < firstWeek; i++) {
-        week.push({date: new Date(firstDate.setDate(firstDate.getDate() - 1)), day: firstDate.getDay()});
-    }
-    for (let i = 1; i <= lastDay; i++) {
-        if (week.length === 7) {
-            month.push(week);
-            week = [];
-        }
-        week.push({date: new Date(date.getFullYear(), date.getMonth(), i), day: new Date(date.getFullYear(), date.getMonth(), i).getDay()});
-    }
-    for (let i = 0; i < 7 - lastWeek; i++) {
-        if (week.length === 7) {
-            month.push(week);
-            week = [];
-        }
-        week.push({date: new Date(lastDate.setDate(lastDate.getDate() + 1)), day: lastDate.getDay()});
-    }
-    if (week.length > 0) {
-        month.push(week);
-    }
-    return month;
-}
-const returnYear = (date: Date) => {
-    const year: Day[][] = [];
-    const firstDate = new Date(date.getFullYear(), 0, 1);
-    const lastDate = new Date(date.getFullYear(), 11, 31);
-    const firstWeek = firstDate.getDay();
-    const lastWeek = lastDate.getDay();
-    const lastDay = lastDate.getDate();
-    let week: Day[] = [];
-    for (let i = 0; i < firstWeek; i++) {
-        week.push({date: new Date(firstDate.setDate(firstDate.getDate() - 1)), day: firstDate.getDay()});
-    }
-    for (let i = 1; i <= lastDay; i++) {
-        if (week.length === 7) {
-            year.push(week);
-            week = [];
-        }
-        week.push({date: new Date(date.getFullYear(), date.getMonth(), i), day: new Date(date.getFullYear(), date.getMonth(), i).getDay()});
-    }
-    for (let i = 0; i < 7 - lastWeek; i++) {
-        if (week.length === 7) {
-            year.push(week);
-            week = [];
-        }
-        week.push({date: new Date(lastDate.setDate(lastDate.getDate() + 1)), day: lastDate.getDay()});
-    }
-    if (week.length > 0) {
-        year.push(week);
-    }
-    return year;
-}
+const selectedDate = new Date(selected)
 
 const calender = {
     day: [{date: selectedDate, day: selectedDate.getDay()}],
@@ -129,12 +61,12 @@ const calender = {
 <div data-mode={mode}
      data-selected={selectedDate}
      data-first-day-of-week={firstDayOfWeek}
-     class={`flex flex-col justify-center items-center py-4 px-6 rounded-lg border border-sky-200 shadow-lg shadow-sky-500/20 ${className}`}
+     class={`shiki-calender flex flex-col justify-center items-center py-4 px-6 rounded-lg border border-sky-200 shadow-lg shadow-sky-500/20 ${className}`}
      id={`${alertId}`}>
     <div class="flex items-center justify-between pb-4">
-        <Icon name="ic:round-chevron-left" class="w-10 h-10 cursor-pointer"/>
+        <Icon name="ic:round-chevron-left" class="shiki-calender-next w-10 h-10 cursor-pointer"/>
         <div class="title"/>
-        <Icon name="ic:round-chevron-right" class="w-10 h-10 cursor-pointer"/>
+        <Icon name="ic:round-chevron-right" class="shiki-calender-back w-10 h-10 cursor-pointer"/>
     </div>
     <div class={`grid ${gapStyle[gap]} ${calenderMode[mode].row}`}>
         {mode == "day" ?
@@ -171,6 +103,29 @@ const calender = {
 </div>
 
 <script>
+    import { returnWeek, returnMonth, returnYear } from "./calender";
+    const calenders = document.querySelectorAll('.shiki-calender')
+    if (!calenders) return
+
+    type Mode = 'day' | 'week' | 'month' | 'year'
+
+    const move = (mode: Mode, toggle: boolean) => {
+
+    }
+
+    calenders.forEach((calender) => {
+        const mode = calender.getAttribute('data-mode') as Mode
+        const next = calender.querySelector('.shiki-calender-next')
+        const back = calender.querySelector('.shiki-calender-back')
+        if (!mode || !next || !back) return
+
+        next.addEventListener('click', () => {
+            move(mode, true)
+        })
+        back.addEventListener('click', () => {
+            move(mode, false)
+        })
+    })
 </script>
 
 <style lang="postcss">
