@@ -1,18 +1,29 @@
 ---
 import {Icon} from 'astro-icon/components'
+
 interface Props {
     class?: string;
     id?: string;
     mode?: 'day' | 'week' | 'month' | 'year';
-    selected?: string;
+    selected?: `${number}-${NR<1, 12>}-${NR<1, 31>}`;
     firstDayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
     gap?: 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | '8xl' | '9xl' | '10xl';
 }
+type NR <
+    Start extends number,
+    End extends number,
+    Arr extends unknown[] = [],
+    Acc extends number = never
+> = Arr['length'] extends End
+    ? Acc | Start | End
+    : NR < Start, End, [...Arr, 1], Arr[Start] extends undefined ? Acc : Acc | Arr['length'] >;
+type Day = {day: number, date: Date};
+
 const {
     class: className = '',
     id: alertId = '',
     mode = 'month',
-    selected = '',
+    selected = new Date().toISOString().slice(0, 10),
     firstDayOfWeek = 0,
     gap = 'md',
 } = Astro.props;
@@ -37,8 +48,9 @@ const calenderMode = {
     year: {col: 'grid-cols-4', row: 'grid-rows-3'},
 };
 const selectedDate = new Date(selected);
+
 const returnWeek = (date: Date) => {
-    const week: Date[] = [];
+    const week: Day[] = [];
     const sunday = date.getDate() - date.getDay();
     for (let i = 0; i < 7; i++) {
         week.push({date: new Date(date.setDate(sunday + i)), day: date.getDay()});
@@ -46,40 +58,71 @@ const returnWeek = (date: Date) => {
     return week;
 }
 const returnMonth = (date: Date) => {
-    const month: Date[][] = [];
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    const firstDayWeek = firstDay.getDay();
-    const lastDayWeek = lastDay.getDay();
-    const lastDate = lastDay.getDate();
-    let week: Date[] = [];
-
-    for (let i = 0; i < firstDayWeek; i++) {
-        week.push(new Date(firstDay.setDate(firstDay.getDate() - 1)));
+    const month: Day[][] = [];
+    const firstDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const firstWeek = firstDate.getDay();
+    const lastWeek = lastDate.getDay();
+    const lastDay = lastDate.getDate();
+    let week: Day[] = [];
+    for (let i = 0; i < firstWeek; i++) {
+        week.push({date: new Date(firstDate.setDate(firstDate.getDate() - 1)), day: firstDate.getDay()});
     }
-    for (let i = 1; i <= lastDate; i++) {
+    for (let i = 1; i <= lastDay; i++) {
         if (week.length === 7) {
             month.push(week);
             week = [];
         }
-        week.push(new Date(date.getFullYear(), date.getMonth(), i));
+        week.push({date: new Date(date.getFullYear(), date.getMonth(), i), day: new Date(date.getFullYear(), date.getMonth(), i).getDay()});
     }
-    for (let i = 0; i < 6 - lastDayWeek; i++) {
+    for (let i = 0; i < 7 - lastWeek; i++) {
         if (week.length === 7) {
             month.push(week);
             week = [];
         }
-        week.push(new Date(lastDay.setDate(lastDay.getDate() + 1)));
+        week.push({date: new Date(lastDate.setDate(lastDate.getDate() + 1)), day: lastDate.getDay()});
     }
     if (week.length > 0) {
         month.push(week);
     }
     return month;
 }
+const returnYear = (date: Date) => {
+    const year: Day[][] = [];
+    const firstDate = new Date(date.getFullYear(), 0, 1);
+    const lastDate = new Date(date.getFullYear(), 11, 31);
+    const firstWeek = firstDate.getDay();
+    const lastWeek = lastDate.getDay();
+    const lastDay = lastDate.getDate();
+    let week: Day[] = [];
+    for (let i = 0; i < firstWeek; i++) {
+        week.push({date: new Date(firstDate.setDate(firstDate.getDate() - 1)), day: firstDate.getDay()});
+    }
+    for (let i = 1; i <= lastDay; i++) {
+        if (week.length === 7) {
+            year.push(week);
+            week = [];
+        }
+        week.push({date: new Date(date.getFullYear(), date.getMonth(), i), day: new Date(date.getFullYear(), date.getMonth(), i).getDay()});
+    }
+    for (let i = 0; i < 7 - lastWeek; i++) {
+        if (week.length === 7) {
+            year.push(week);
+            week = [];
+        }
+        week.push({date: new Date(lastDate.setDate(lastDate.getDate() + 1)), day: lastDate.getDay()});
+    }
+    if (week.length > 0) {
+        year.push(week);
+    }
+    return year;
+}
+
 const calender = {
     day: [{date: selectedDate, day: selectedDate.getDay()}],
     week: [returnWeek(selectedDate)],
     month: [returnMonth(selectedDate)],
+    year: [returnYear(selectedDate)],
 }
 ---
 
@@ -94,20 +137,30 @@ const calender = {
         <Icon name="ic:round-chevron-right" class="w-10 h-10 cursor-pointer"/>
     </div>
     <div class={`grid ${gapStyle[gap]} ${calenderMode[mode].row}`}>
-        {calender[mode].map((row: Date[] | Date[][]) => {
-            return row.map((col: Date | Date[]) => {
+        {mode == "day" ?
+            calender.day.map((row: Day) => {
+                return (
+                        <div class={`grid ${gapStyle[gap]} ${calenderMode[mode].col} text-sky-400`}>
+                            <div class="day">
+                                {row.date.getDate()}
+                            </div>
+                        </div>
+                )
+            })
+            : calender[mode].map((row: Day[] | Day[][]) => {
+            return row.map((col: Day | Day[]) => {
                 return (
                         <div class={`grid ${gapStyle[gap]} ${calenderMode[mode].col} text-sky-400`}>
                             {Array.isArray(col) ?
-                                col.map((date: Date) => {
+                                col.map((date: Day) => {
                                     return (
-                                            <div class={`${date.getDate() === selectedDate.getDate() ? "today" : ""} ${date.getMonth() != selectedDate.getMonth() ? "noday" : "day"}`}>
-                                                {date.getDate()}
+                                            <div class={`${date.date.getDate() === selectedDate.getDate() ? "today" : ""} ${date.date.getMonth() != selectedDate.getMonth() ? "noday" : "day"}`}>
+                                                {date.date.getDate()}
                                             </div>
                                     )
                                 }) :
-                                    <div class={`${col.getDate() === selectedDate.getDate() ? "today" : ""} ${col.getMonth() != selectedDate.getMonth() ? "noday" : "day"}`}>
-                                        {col.getDate()}
+                                    <div class={`${col.date.getDate() === selectedDate.getDate() ? "today" : ""} ${col.date.getMonth() != selectedDate.getMonth() ? "noday" : "day"}`}>
+                                        {col.date.getDate()}
                                     </div>
                             }
                         </div>

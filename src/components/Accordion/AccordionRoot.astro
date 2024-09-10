@@ -35,35 +35,61 @@ const style = {
 }
 ---
 
-<div class={`shiki-accordion-root w-fit text-lg px-8 py-10 flex flex-col gap-5 ${border ? style.border : ""} ${fill ? style.fill : ""} ${style.radius[radius]} ${style.shadow[shadow]} ${className}`} id={accordionId} data-multiple={multiple ? "true" : "false"}>
+<div class={`shiki-accordion-root w-fit text-lg px-8 py-10 flex flex-col gap-5 ${border ? style.border : ""} ${fill ? style.fill : ""} ${style.radius[radius]} ${style.shadow[shadow]} ${className}`}
+     id={accordionId}
+     data-opened=""
+     data-multiple={multiple ? "true" : "false"}
+>
     <slot/>
 </div>
 
 <script>
     const accordions = document.querySelectorAll('.shiki-accordion-root')
+    const dataName = 'data-is-open'
+    const setAttrAll = (el: HTMLElement | Element, attr: string, value: string) => {
+        el.setAttribute(attr, value)
+        el.childNodes.forEach((child) => {
+            if (child.hasChildNodes() && child instanceof HTMLElement || child instanceof Element) {
+                setAttrAll(child, attr, value)
+            }
+        })
+    }
     accordions?.forEach((el) => {
         const items = el.querySelectorAll('.shiki-accordion-item')
         const multiple = el.getAttribute('data-multiple') == 'true'
+        const opened = el.getAttribute('data-opened') || ''
         if (!items) return
-        items.forEach((item, i) => {
+        items.forEach((item) => {
             const trigger = item.querySelector('.shiki-accordion-trigger')
             const content = item.querySelector('.shiki-accordion-content')
             if (!trigger || !content) return
-            content.setAttribute('data-is-open', trigger.getAttribute('data-is-open') || 'close')
+            content.setAttribute(dataName, trigger.getAttribute(dataName) || 'close')
+            const value = item.getAttribute('data-value') || ''
+            const isAdd = value && !value.includes(',') && !opened.includes(value)
+            if (isAdd && trigger.getAttribute(dataName) == 'open') {
+                el.setAttribute('data-opened', `${opened == "" ? "" : opened + ","}${value}`)
+            }
             trigger.addEventListener('click', () => {
-                const isOpen = trigger.getAttribute('data-is-open') || 'close'
+                const isOpen = trigger.getAttribute(dataName) || 'close'
                 const set = isOpen == 'open' ? 'close' : 'open'
-                if (multiple && set == 'open') {
-                    items.forEach((item, i) => {
+                const opened = el.getAttribute('data-opened') || ''
+                if (!multiple && set == 'open') {
+                    items.forEach((item) => {
                         const trigger = item.querySelector('.shiki-accordion-trigger')
                         const content = item.querySelector('.shiki-accordion-content')
                         if (!trigger || !content) return
-                        trigger.setAttribute('data-is-open', 'close')
-                        content.setAttribute('data-is-open', 'close')
+                        setAttrAll(content, dataName, 'close')
                     })
                 }
-                trigger.setAttribute('data-is-open', set)
-                content.setAttribute('data-is-open', set)
+                setAttrAll(trigger, dataName, set)
+                setAttrAll(content, dataName, set)
+                if (set == 'close') {
+                    const openList = opened.split(',')
+                    const newValue = openList.filter((v) => v != value).join(',')
+                    el.setAttribute('data-opened', newValue)
+                } else {
+                    el.setAttribute('data-opened', `${opened == "" ? "" : opened + ","}${value}`)
+                }
             })
         })
     })

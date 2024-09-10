@@ -11,14 +11,6 @@ const {
 } = Astro.props
 ---
 
-<div class={`shiki-accordion-item ${className}`} id={`${accordionId}`} data-accordion>
+<div class={`shiki-accordion-item ${className}`} id={`${accordionId}`} data-value={value}>
     <slot />
 </div>
-
-<script>
-    const items = document.querySelectorAll('.shiki-accordion-item')
-    items.forEach((el) => {
-        const data = el.getAttribute('data-accordion')
-        
-    })
-</script>
